@@ -1,0 +1,22 @@
+---
+version: '3'
+
+services:
+  traefik:
+    container_name: traefik
+    image: traefik:v2.9.9
+    restart: always
+    ports:
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik_config:/config
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+    command:
+      - "--entrypoints.websecure.address=:443"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=myemail@example.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/config/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--ping"
